@@ -188,7 +188,8 @@ Tracking::Tracking(
     // 在单目初始化的时候，会用mpIniORBextractor来作为特征点提取器
     if(sensor==System::MONOCULAR)
         mpIniORBextractor = new ORBextractor(2*nFeatures,fScaleFactor,nLevels,fIniThFAST,fMinThFAST);
-
+    //双目会提取左和右两个图像的orb feature,单目是直接提取两倍的orb feature作为图像的特征点。
+    
     cout << endl  << "ORB Extractor Parameters: " << endl;
     cout << "- Number of Features: " << nFeatures << endl;
     cout << "- Scale Levels: " << nLevels << endl;
