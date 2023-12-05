@@ -1,3 +1,7 @@
+# 自己的课程注释版本
+
+标记相对课程注释版本更加详细一点，但是比较乱，仅作为自己的学习内容。
+
 # ORB-SLAM2 超详细注释
 
 ![DEMO](https://github.com/electech6/ORB_SLAM2_detailed_comments/blob/master/demo.gif)
