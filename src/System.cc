@@ -60,6 +60,7 @@ System::System(const string &strVocFile,					//词典文件路径
         cout << "RGB-D" << endl;
 
     //Check settings file
+    //读取配置文件，使用opencv的filestorge函数读取，读取的文件为相机的参数文件，如TUM1.yaml
     cv::FileStorage fsSettings(strSettingsFile.c_str(), 	//将配置文件名转换成为字符串
     						   cv::FileStorage::READ);		//只读
     //如果打开失败，就输出调试信息
@@ -73,9 +74,9 @@ System::System(const string &strVocFile,					//词典文件路径
     //Load ORB Vocabulary
     cout << endl << "Loading ORB Vocabulary. This could take a while..." << endl;
 
-    //建立一个新的ORB字典
+    //建立一个新的ORB字典，这里的函数是第三方库DBOW库的函数
     mpVocabulary = new ORBVocabulary();
-    //获取字典加载状态
+    //获取字典加载状态，这里的函数是第三方库DBOW库的函数
     bool bVocLoad = mpVocabulary->loadFromTextFile(strVocFile);
     //如果加载失败，就输出调试信息
     if(!bVocLoad)
@@ -88,7 +89,8 @@ System::System(const string &strVocFile,					//词典文件路径
     //否则则说明加载成功
     cout << "Vocabulary loaded!" << endl << endl;
 
-    //Create KeyFrame Database
+    //Create KeyFrame Database， 创建关键帧数据库，也就是一个空的数据库，在建立关键帧的时候不断的向数据库中添加关键帧，所以这里也申请了动态内存
+
     mpKeyFrameDatabase = new KeyFrameDatabase(*mpVocabulary);
 
     //Create the Map
@@ -99,7 +101,7 @@ System::System(const string &strVocFile,					//词典文件路径
     mpFrameDrawer = new FrameDrawer(mpMap);
     mpMapDrawer = new MapDrawer(mpMap, strSettingsFile);
 
-    //在本主进程中初始化追踪线程
+    //在本主进程中初始化追踪线程，最重要的部分，跟踪线程
     //Initialize the Tracking thread
     //(it will live in the main thread of execution, the one that called this constructor)
     mpTracker = new Tracking(this,						//现在还不是很明白为什么这里还需要一个this指针  TODO  

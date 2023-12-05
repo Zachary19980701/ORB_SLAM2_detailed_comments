@@ -63,7 +63,7 @@ using namespace std;
 namespace ORB_SLAM2
 {
 
-///构造函数
+///构造函数，orbslam的跟踪线程，也是整个函数中最重要的部分
 Tracking::Tracking(
     System *pSys,                       //系统实例
     ORBVocabulary* pVoc,                //BOW字典
@@ -88,7 +88,7 @@ Tracking::Tracking(
         mnLastRelocFrameId(0)                               //恢复为0,没有进行这个过程的时候的默认值
 {
     // Load camera parameters from settings file
-    // Step 1 从配置文件中加载相机参数
+    // Step 1 从配置文件中加载相机参数，并进行赋值
     cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
     float fx = fSettings["Camera.fx"];
     float fy = fSettings["Camera.fy"];
@@ -172,6 +172,8 @@ Tracking::Tracking(
     int fMinThFAST = fSettings["ORBextractor.minThFAST"];
 
     // tracking过程都会用到mpORBextractorLeft作为特征点提取器
+    //orb特征提取器
+    //对于单目相机来说，left图像就是单目图像，双目相机来说，特征点就只使用left图像作为特征点
     mpORBextractorLeft = new ORBextractor(
         nFeatures,      //参数的含义还是看上面的注释吧
         fScaleFactor,
