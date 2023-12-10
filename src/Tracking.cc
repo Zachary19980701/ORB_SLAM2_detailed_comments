@@ -440,7 +440,7 @@ void Tracking::Track()
 
     // Get Map Mutex -> Map cannot be changed
     // 地图更新时加锁。保证地图不会发生变化
-    // 疑问:这样子会不会影响地图的实时更新?
+    // 疑问:这样子会不会影响地图的实时更新 ?
     // 回答：主要耗时在构造帧中特征点的提取和匹配部分,在那个时候地图是没有被上锁的,有足够的时间更新地图
     unique_lock<mutex> lock(mpMap->mMutexMapUpdate);
 
@@ -869,10 +869,11 @@ void Tracking::StereoInitialization()
  * Step 7：将三角化得到的3D点包装成MapPoints
  */
 void Tracking::MonocularInitialization()
-{
+{ 
     // Step 1 如果单目初始器还没有被创建，则创建。后面如果重新初始化时会清掉这个
     if(!mpInitializer)
     {
+        //如果单目初始化器没有被创建，判断当前图像的特征点有没有超过一百，如果超过一百就进行单目的初始化，如果没有超过一百就不做操作，当前帧就放弃
         // Set Reference Frame
         // 单目初始帧的特征点数必须大于100
         if(mCurrentFrame.mvKeys.size()>100)
@@ -937,6 +938,9 @@ void Tracking::MonocularInitialization()
             return;
         }
 
+
+        //这里保证两个部分，首先只有连续两帧图像的特征点数量都大于100才能进入单目的初始化，第二就是连续的两帧之间的特征点的匹配数量
+        //大于100个，以保证图像初始化的有效性
         cv::Mat Rcw; // Current Camera Rotation
         cv::Mat tcw; // Current Camera Translation
         vector<bool> vbTriangulated; // Triangulated Correspondences (mvIniMatches)
